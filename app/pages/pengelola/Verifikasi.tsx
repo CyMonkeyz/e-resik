@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar";
 import { Modal } from "../../components/Modal";
 import Button from "../../components/Button";
 import { StatusBadge } from "../../components/StatusBadge";
-import { useApp, showToast, Request } from "../../context/AppContext";
+import { useApp, showToast, type Request } from "../../context/AppContext";
 import { 
   IoCheckmarkCircle, 
   IoCloseCircle, 
@@ -49,12 +49,15 @@ export default function Verifikasi() {
     });
 
     if (sortConfig !== null) {
+      const { key, direction } = sortConfig;
       filtered.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
+        const aVal = (a as any)[key];
+        const bVal = (b as any)[key];
+        if (aVal < bVal) {
+          return direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
+        if (aVal > bVal) {
+          return direction === 'ascending' ? 1 : -1;
         }
         return 0;
       });

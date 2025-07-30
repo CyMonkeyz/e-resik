@@ -18,12 +18,13 @@ import {
 import { Bar, Line } from "react-chartjs-2";
 import { WasteStockCard } from "../../components/WasteStockCard";
 import { 
-  IoStatsChart, 
-  IoPeople, 
-  IoWallet, 
-  IoCube, 
+  IoStatsChart,
+  IoPeople,
+  IoWallet,
+  IoCube,
   IoTrendingUp,
-  IoCalendarOutline
+  IoCalendarOutline,
+  IoCheckmarkCircle
 } from "react-icons/io5";
 
 ChartJS.register(
@@ -57,11 +58,11 @@ export default function Monitoring() {
   };
 
   const monthlyTrendData = {
-    labels: kpiData.monthlyTrend.map(d => d.month),
+    labels: kpiData.monthlyTrend.map((d: any) => d.month),
     datasets: [
       {
         label: "Total Sampah (kg)",
-        data: kpiData.monthlyTrend.map(d => d.waste),
+        data: kpiData.monthlyTrend.map((d: any) => d.waste),
         borderColor: "#10B981",
         backgroundColor: "rgba(16, 185, 129, 0.1)",
         fill: true,
@@ -70,7 +71,7 @@ export default function Monitoring() {
       },
       {
         label: "Pendapatan (Rp)",
-        data: kpiData.monthlyTrend.map(d => d.revenue),
+        data: kpiData.monthlyTrend.map((d: any) => d.revenue),
         borderColor: "#3B82F6",
         backgroundColor: "rgba(59, 130, 246, 0.1)",
         fill: true,

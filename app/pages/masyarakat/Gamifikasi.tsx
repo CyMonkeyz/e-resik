@@ -6,7 +6,7 @@ import Navbar from "../../components/Navbar";
 import { PointsDisplay } from "../../components/PointsDisplay";
 import { MissionCard } from "../../components/MissionCard";
 import { Modal } from "../../components/Modal";
-import { useApp } from "../../context/AppContext";
+import { useApp, showToast, type Badge } from "../../context/AppContext";
 import { leaderboard } from "../../utils/dummyData";
 import { 
   IoTrophy, 
@@ -24,7 +24,7 @@ import {
 export default function Gamifikasi() {
   const { user, missions, completeMission } = useApp();
   const [selectedTab, setSelectedTab] = useState("missions");
-  const [selectedBadge, setSelectedBadge] = useState(null);
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [showRewardModal, setShowRewardModal] = useState(false);
 
@@ -34,7 +34,7 @@ export default function Gamifikasi() {
   const unlockedBadges = user.badges.filter(b => !b.achieved);
 
   // Calculate user rank in leaderboard
-  const userRank = leaderboard.findIndex(l => l.name === user.name) + 1;
+  const userRank = leaderboard.findIndex((l: any) => l.name === user.name) + 1;
 
   // Available rewards based on points
   const rewards = [
@@ -64,7 +64,7 @@ export default function Gamifikasi() {
     active: { backgroundColor: "#10b981", color: "#ffffff" }
   };
 
-  const handleBadgeClick = (badge) => {
+  const handleBadgeClick = (badge: Badge) => {
     setSelectedBadge(badge);
     setShowBadgeModal(true);
   };
@@ -341,7 +341,7 @@ export default function Gamifikasi() {
                 
                 <div className="p-6">
                   <div className="space-y-4">
-                    {leaderboard.map((player, index) => (
+                    {leaderboard.map((player: any, index: number) => (
                       <motion.div
                         key={player.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -500,7 +500,7 @@ export default function Gamifikasi() {
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                   <p className="text-green-800 font-medium mb-2">🎉 Badge Diraih!</p>
                   <p className="text-sm text-green-600">
-                    Diraih pada {new Date(selectedBadge.date).toLocaleDateString("id-ID")}
+                    Diraih pada {selectedBadge.date ? new Date(selectedBadge.date).toLocaleDateString("id-ID") : ""}
                   </p>
                 </div>
               ) : (
