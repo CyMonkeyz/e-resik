@@ -23,14 +23,14 @@ export function PointsDisplay({ points, previousPoints = 0, showAnimation = true
       className="flex items-center gap-2"
     >
       <span className="text-yellow-500">⭐</span>
-      <span className={`font-bold text-green-700 ${sizeClasses[size]}`}>
+      <span className={`font-bold text-yellow-300 ${sizeClasses[size]}`}>
         {showAnimation ? (
           <CountUp start={previousPoints} end={points} duration={1} />
         ) : (
           points
         )}
       </span>
-      <span className="text-sm text-gray-500">poin</span>
+      <span className="text-sm text-white">poin</span>
     </motion.div>
   );
 }

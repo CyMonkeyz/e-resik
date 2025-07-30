@@ -1,4 +1,4 @@
-// app/pages/masyarakat/Dashboard.tsx - Enhanced dashboard with bug fixes
+// app/pages/masyarakat/Dashboard.tsx
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
@@ -6,150 +6,63 @@ import { useApp } from "../../context/AppContext";
 import { PointsDisplay } from "../../components/PointsDisplay";
 import { MissionCard } from "../../components/MissionCard";
 import { VideoCard } from "../../components/VideoCard";
-import { NotificationDropdown } from "../../components/NotificationDropdown";
-import { IoTrophy, IoLeaf, IoCalendar, IoStatsChart, IoFlash, IoGift, IoTrendingUp, IoTime, IoCheckmarkCircle } from "react-icons/io5";
+import { IoTrophy, IoLeaf, IoFlash, IoGift, IoTrendingUp, IoTime, IoCheckmarkCircle } from "react-icons/io5";
 import { RiRecycleFill } from "react-icons/ri";
 import { useState, useEffect } from "react";
 
 // Weather API simulation
-const getWeatherData = () => {
-  // In real app, this would be an API call
-  return {
-    temperature: 28,
-    condition: "Cerah Berawan",
-    icon: "🌤️",
-    tip: "Cuaca bagus untuk menjemur sampah yang akan disetor!"
-  };
-};
+const getWeatherData = () => ({
+  temperature: 28,
+  condition: "Cerah Berawan",
+  icon: "🌤️",
+  tip: "Cuaca bagus untuk menjemur sampah yang akan disetor!"
+});
 
 // Educational content simulation
 const educationalContent = [
-  {
-    id: 1,
-    title: "Cara Memilah Sampah dengan Benar",
-    thumbnail: "https://example.com/thumb1.jpg",
-    duration: "5:30",
-    views: 1200,
-    type: "video" as "video",
-    url: "https://example.com/video1"
-  },
-  {
-    id: 2,
-    title: "Tips Mengolah Sampah Organik",
-    thumbnail: "https://example.com/thumb2.jpg",
-    duration: "4:15",
-    views: 980,
-    type: "video" as "video",
-    url: "https://example.com/video2"
-  },
-  {
-    id: 3,
-    title: "Mengenal Jenis Plastik yang Bisa Didaur Ulang",
-    thumbnail: "https://example.com/thumb3.jpg",
-    duration: "6:45",
-    views: 1500,
-    type: "video" as "video",
-    url: "https://example.com/video3"
-  },
-  {
-    id: 4,
-    title: "Membuat Kompos dari Sampah Dapur",
-    thumbnail: "https://example.com/thumb4.jpg",
-    duration: "8:20",
-    views: 850,
-    type: "video" as "video",
-    url: "https://example.com/video4"
-  }
+  { id: 1, title: "Cara Memilah Sampah dengan Benar", thumbnail: "https://example.com/thumb1.jpg", duration: "5:30", views: 1200, type: "video" as "video", url: "https://example.com/video1" },
+  { id: 2, title: "Tips Mengolah Sampah Organik", thumbnail: "https://example.com/thumb2.jpg", duration: "4:15", views: 980, type: "video" as "video", url: "https://example.com/video2" },
+  { id: 3, title: "Mengenal Jenis Plastik yang Bisa Didaur Ulang", thumbnail: "https://example.com/thumb3.jpg", duration: "6:45", views: 1500, type: "video" as "video", url: "https://example.com/video3" },
+  { id: 4, title: "Membuat Kompos dari Sampah Dapur", thumbnail: "https://example.com/thumb4.jpg", duration: "8:20", views: 850, type: "video" as "video", url: "https://example.com/video4" }
 ];
 
 // Leaderboard API simulation
 const getLeaderboard = (currentUser: any) => {
-  // In real app, this would be an API call
   const mockUsers = [
-    { name: "Siti Aminah", points: 180, rank: 1, isUser: false },
-    { name: "Ahmad Rahman", points: 165, rank: 2, isUser: false },
-    { name: "Budi Santoso", points: 152, rank: 3, isUser: false },
+    { name: "Amdadur Ganteng", points: 180, rank: 1, isUser: false },
+    { name: "Rohman Menggemaskan", points: 165, rank: 2, isUser: false },
+    { name: "Wildan Lucu", points: 152, rank: 3, isUser: false }
   ];
-  
-  // Insert current user into leaderboard
   const userRank = mockUsers.findIndex(user => user.points < currentUser.points) + 1;
   if (userRank === 0) {
-    mockUsers.push({ 
-      name: currentUser.name, 
-      points: currentUser.points, 
-      rank: mockUsers.length + 1, 
-      isUser: true 
-    });
+    mockUsers.push({ name: currentUser.name, points: currentUser.points, rank: mockUsers.length + 1, isUser: true });
   } else {
-    mockUsers.splice(userRank - 1, 0, {
-      name: currentUser.name,
-      points: currentUser.points,
-      rank: userRank,
-      isUser: true
-    });
-    // Update ranks
-    mockUsers.forEach((user, index) => {
-      user.rank = index + 1;
-    });
+    mockUsers.splice(userRank - 1, 0, { name: currentUser.name, points: currentUser.points, rank: userRank, isUser: true });
+    mockUsers.forEach((user, index) => { user.rank = index + 1; });
   }
-  
   return mockUsers.slice(0, 3);
 };
 
 export default function DashboardMasyarakat() {
-  const { 
-    user, 
-    missions = [], 
-    notifications = [], 
-    getUserRequests,
-    markNotificationAsRead,
-    markAllNotificationsAsRead
-  } = useApp();
-  
-  const [weather, setWeather] = useState(getWeatherData());
+  const { user, missions = [], notifications = [], getUserRequests } = useApp();
+  const [weather] = useState(getWeatherData());
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
-  
-  useEffect(() => {
-    // Initialize leaderboard
-    setLeaderboard(getLeaderboard(user));
-  }, [user]);
-  
-  // Safely get user data with fallbacks
+  useEffect(() => { setLeaderboard(getLeaderboard(user)); }, [user]);
+
   const userRequests = getUserRequests ? getUserRequests(user.id) : [];
   const activeMissions = missions.filter(m => !m.completed).slice(0, 3);
-  const recentNotifications = notifications.slice(0, 3);
   const achievedBadges = user.badges?.filter(b => b.achieved) || [];
   const pendingRequests = userRequests.filter(r => r.status === "pending");
-  
-  // Safe date filtering with error handling
   const completedThisWeek = userRequests.filter(r => {
-    try {
-      return r.status === "completed" && 
-        new Date(r.verifiedAt || r.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    } catch (error) {
-      console.warn("Date parsing error:", error);
-      return false;
-    }
+    try { return r.status === "completed" && new Date(r.verifiedAt || r.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); }
+    catch { return false; }
   });
-
-  // Calculate progress to next level
   const pointsInCurrentLevel = user.points % 100;
   const progressToNextLevel = (pointsInCurrentLevel / 100) * 100;
   const pointsToNextLevel = 100 - pointsInCurrentLevel;
-
-  // Get recent achievements with safe date handling
-  const recentAchievements = achievedBadges
-    .filter(b => b.date)
-    .sort((a, b) => {
-      try {
-        return new Date(b.date!).getTime() - new Date(a.date!).getTime();
-      } catch (error) {
-        return 0;
-      }
-    })
-    .slice(0, 2);
-
-  // Safe access to statistics with defaults
+  const recentAchievements = achievedBadges.filter(b => b.date).sort((a, b) => {
+    try { return new Date(b.date!).getTime() - new Date(a.date!).getTime(); } catch { return 0; }
+  }).slice(0, 2);
   const statistics = {
     ...(user.statistics || {}),
     totalWaste: user.statistics?.totalWaste ?? 0,
@@ -158,30 +71,13 @@ export default function DashboardMasyarakat() {
     plasticWaste: user.statistics?.plasticWaste ?? 0
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+  const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
   return (
     <>
       <Navbar />
-      <motion.main
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"
-      >
+      <motion.main variants={containerVariants} initial="hidden" animate="visible" className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Welcome Header */}
         <motion.div variants={itemVariants} className="mb-8">
           <div className="bg-gradient-to-r from-green-500 via-blue-600 to-purple-600 rounded-xl p-6 text-white relative overflow-hidden">
@@ -191,45 +87,40 @@ export default function DashboardMasyarakat() {
               <div className="absolute bottom-4 right-4 text-4xl">🌱</div>
               <div className="absolute top-1/2 left-1/4 text-3xl transform -translate-y-1/2">🌍</div>
             </div>
-            
             <div className="relative">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between">
                 <div className="mb-6 lg:mb-0">
                   <div className="flex items-center space-x-2 mb-2">
                     <h1 className="text-2xl md:text-3xl font-bold">
-                      Selamat Datang, {user.name || 'Pengguna'}! 👋
+                      Selamat Datang, {user.name || "Pengguna"}! 👋
                     </h1>
                     {(user.level || 0) >= 2 && (
-                      <span className="bg-yellow-500 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                        VIP
-                      </span>
+                      <span className="bg-yellow-500 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">VIP</span>
                     )}
                   </div>
                   <p className="text-green-100 mb-4">
                     Mari bersama-sama menjaga lingkungan dan dapatkan poin!
                   </p>
-                  
                   {/* Quick Stats */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                     <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                      <div className="text-xl font-bold">{completedThisWeek.length}</div>
-                      <div className="text-xs text-green-100">Setoran Minggu Ini</div>
+                      <div className="text-xl font-bold text-black">{completedThisWeek?.length ?? 0}</div>
+                      <div className="text-xs text-black">Setoran Minggu Ini</div>
                     </div>
                     <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                      <div className="text-xl font-bold">{achievedBadges.length}</div>
-                      <div className="text-xs text-green-100">Badge Diraih</div>
+                      <div className="text-xl font-bold text-black">{achievedBadges?.length ?? 0}</div>
+                      <div className="text-xs text-black">Badge Diraih</div>
                     </div>
                     <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                      <div className="text-xl font-bold">{statistics.totalWaste.toFixed(1)}kg</div>
-                      <div className="text-xs text-green-100">Total Sampah</div>
+                      <div className="text-xl font-bold text-black">{Number(statistics?.totalWaste ?? 0).toFixed(1)}kg</div>
+                      <div className="text-xs text-black">Total Sampah</div>
                     </div>
                     <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                      <div className="text-xl font-bold">{statistics.co2Saved.toFixed(1)}kg</div>
-                      <div className="text-xs text-green-100">CO₂ Diselamatkan</div>
+                      <div className="text-xl font-bold text-black">{Number(statistics?.co2Saved ?? 0).toFixed(1)}kg</div>
+                      <div className="text-xs text-black">CO₂ Diselamatkan</div>
                     </div>
                   </div>
                 </div>
-                
                 <div className="text-center lg:text-right">
                   <PointsDisplay points={user.points || 0} size="lg" />
                   <div className="mt-2 space-y-2">
@@ -265,11 +156,9 @@ export default function DashboardMasyarakat() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Total Sampah</p>
-                      <p className="text-2xl font-bold text-green-600">
-                        {statistics.totalWaste.toFixed(1)}kg
-                      </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-black mb-1">Total Sampah</p>
+                      <p className="text-2xl font-bold text-green-600">{statistics.totalWaste.toFixed(1)}kg</p>
+                      <p className="text-xs text-black">
                         +{(statistics.totalWaste * 0.1).toFixed(1)}kg minggu ini
                       </p>
                     </div>
@@ -278,18 +167,15 @@ export default function DashboardMasyarakat() {
                     </div>
                   </div>
                 </motion.div>
-                
                 <motion.div 
                   whileHover={{ scale: 1.02 }}
                   className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">CO₂ Diselamatkan</p>
-                      <p className="text-2xl font-bold text-blue-600">
-                        {statistics.co2Saved.toFixed(1)}kg
-                      </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-black mb-1">CO₂ Diselamatkan</p>
+                      <p className="text-2xl font-bold text-blue-600">{statistics.co2Saved.toFixed(1)}kg</p>
+                      <p className="text-xs text-black">
                         Setara {statistics.treesEquivalent.toFixed(1)} pohon
                       </p>
                     </div>
@@ -298,18 +184,15 @@ export default function DashboardMasyarakat() {
                     </div>
                   </div>
                 </motion.div>
-                
                 <motion.div 
                   whileHover={{ scale: 1.02 }}
                   className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Badge Diraih</p>
-                      <p className="text-2xl font-bold text-yellow-600">
-                        {achievedBadges.length}
-                      </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-black mb-1">Badge Diraih</p>
+                      <p className="text-2xl font-bold text-yellow-600">{achievedBadges.length}</p>
+                      <p className="text-xs text-black">
                         dari {user.badges?.length || 0} total badge
                       </p>
                     </div>
@@ -353,7 +236,7 @@ export default function DashboardMasyarakat() {
                     <h3 className="text-lg font-medium text-gray-800 mb-2">
                       Semua Misi Selesai!
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-black mb-4">
                       Hebat! Anda telah menyelesaikan semua misi minggu ini.
                     </p>
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -408,7 +291,7 @@ export default function DashboardMasyarakat() {
                            request.status === "pending" ? "⏳" : "🔄"}
                         </div>
                         <div>
-                          <p className="font-medium capitalize">
+                          <p className="font-medium capitalize text-black">
                             {request.type === "pickup" ? "Penjemputan" : "Setoran"} {request.wasteType}
                           </p>
                           <p className="text-sm text-gray-600">
@@ -429,7 +312,7 @@ export default function DashboardMasyarakat() {
                   ))}
                   
                   {userRequests.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-black">
                       <IoTime className="w-12 h-12 mx-auto mb-2 text-gray-300" />
                       <p>Belum ada aktivitas</p>
                       <p className="text-sm">Mulai dengan menjadwalkan setoran pertama Anda!</p>
@@ -444,7 +327,7 @@ export default function DashboardMasyarakat() {
           <div className="space-y-6">
             {/* Recent Achievements */}
             <motion.div variants={itemVariants} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">🏆 Pencapaian Terbaru</h3>
+              <h3 className="text-lg font-bold text-black mb-4">🏆 Pencapaian Terbaru</h3>
               <div className="space-y-3">
                 {recentAchievements.length > 0 ? (
                   recentAchievements.map((badge) => (
@@ -470,7 +353,7 @@ export default function DashboardMasyarakat() {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="text-center py-6 text-gray-500">
+                  <div className="text-center py-6 text-black">
                     <IoTrophy className="w-12 h-12 mx-auto mb-2 text-gray-300" />
                     <p className="text-sm">Belum ada badge yang diraih</p>
                     <p className="text-xs">Selesaikan misi untuk mendapatkan badge!</p>
@@ -542,7 +425,7 @@ export default function DashboardMasyarakat() {
                 </div>
               </div>
               <div className="mt-4 p-3 bg-white bg-opacity-70 rounded-lg">
-                <p className="text-xs text-gray-600 text-center">
+                <p className="text-xs text-black text-center">
                   💚 Kontribusi Anda membuat perbedaan untuk planet ini!
                 </p>
               </div>
@@ -551,7 +434,7 @@ export default function DashboardMasyarakat() {
             {/* Leaderboard Preview */}
             <motion.div variants={itemVariants} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-800">👑 Top Kontributor</h3>
+                <h3 className="text-lg font-bold text-black">👑 Top Kontributor</h3>
                 <Link 
                   to="/masyarakat/gamifikasi"
                   className="text-green-600 hover:text-green-700 text-sm font-medium"
@@ -581,7 +464,7 @@ export default function DashboardMasyarakat() {
                         {index === 0 ? "🏆" : index === 1 ? "🥈" : "🥉"}
                       </div>
                       <div>
-                        <p className="font-medium text-sm">
+                        <p className="font-medium text-sm text-black">
                           {player.name}
                           {player.isUser && " (Anda)"}
                         </p>
@@ -638,12 +521,12 @@ export default function DashboardMasyarakat() {
 
             {/* Weather Widget */}
             <motion.div variants={itemVariants} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+              <h3 className="text-lg font-bold text-black mb-4 flex items-center">
                 ☀️ Cuaca Hari Ini
               </h3>
               <div className="text-center">
                 <div className="text-4xl mb-2">{weather.icon}</div>
-                <p className="font-bold text-xl text-gray-800">{weather.temperature}°C</p>
+                <p className="font-bold text-xl text-black">{weather.temperature}°C</p>
                 <p className="text-sm text-gray-600">{weather.condition}</p>
                 <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                   <p className="text-xs text-blue-800">
@@ -688,7 +571,7 @@ export default function DashboardMasyarakat() {
             </div>
             <div className="text-center">
               <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-3">
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-black">
                   {statistics.plasticWaste.toFixed(1)}/15kg
                 </p>
                 <p className="text-xs text-orange-100">Progress Anda</p>
@@ -730,3 +613,4 @@ export default function DashboardMasyarakat() {
     </>
   );
 }
+

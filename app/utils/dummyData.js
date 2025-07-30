@@ -3,7 +3,7 @@
 // User data for masyarakat
 export const userData = {
   id: 1,
-  name: "Budi Santoso",
+  name: "Wildan Lucu",
   email: "budi@email.com",
   phone: "08123456789",
   address: "Jl. Merdeka No. 123, Jakarta",
@@ -122,7 +122,7 @@ export let requests = [
   {
     id: 1,
     userId: 1,
-    userName: "Budi Santoso",
+    userName: "Wildan Lucu",
     userAddress: "Jl. Merdeka No. 123",
     userPhone: "08123456789",
     type: "pickup", // "pickup" or "deposit"
@@ -142,7 +142,7 @@ export let requests = [
   {
     id: 2,
     userId: 2,
-    userName: "Siti Aminah",
+    userName: "Amdadur Ganteng",
     userAddress: "Jl. Sudirman No. 456",
     userPhone: "08234567890",
     type: "pickup",
@@ -162,7 +162,7 @@ export let requests = [
   {
     id: 3,
     userId: 3,
-    userName: "Ahmad Rahman",
+    userName: "Rohman Menggemaskan",
     userAddress: "Jl. Gatot Subroto No. 789",
     userPhone: "08345678901",
     type: "deposit",
@@ -183,9 +183,9 @@ export let requests = [
 
 // Leaderboard data
 export const leaderboard = [
-  { id: 1, name: "Siti Aminah", points: 180, level: 3, badge: "♻️" },
-  { id: 2, name: "Ahmad Rahman", points: 165, level: 2, badge: "🌱" },
-  { id: 3, name: "Budi Santoso", points: 120, level: 2, badge: "📅" },
+  { id: 1, name: "Amdadur Ganteng", points: 180, level: 3, badge: "♻️" },
+  { id: 2, name: "Rohman Menggemaskan", points: 165, level: 2, badge: "🌱" },
+  { id: 3, name: "Wildan Lucu", points: 120, level: 2, badge: "📅" },
   { id: 4, name: "Dewi Lestari", points: 95, level: 1, badge: "🗂️" },
   { id: 5, name: "Eko Prasetyo", points: 78, level: 1, badge: "🗂️" }
 ];
@@ -249,7 +249,7 @@ export const kpiData = {
 export const registeredUsers = [
   {
     id: 1,
-    name: "Budi Santoso",
+    name: "Wildan Lucu",
     email: "budi@email.com",
     phone: "08123456789",
     address: "Jl. Merdeka No. 123",
@@ -262,7 +262,7 @@ export const registeredUsers = [
   },
   {
     id: 2,
-    name: "Siti Aminah",
+    name: "Amdadur Ganteng",
     email: "siti@email.com",
     phone: "08234567890",
     address: "Jl. Sudirman No. 456",
@@ -275,7 +275,7 @@ export const registeredUsers = [
   },
   {
     id: 3,
-    name: "Ahmad Rahman",
+    name: "Rohman Menggemaskan",
     email: "ahmad@email.com",
     phone: "08345678901",
     address: "Jl. Gatot Subroto No. 789",

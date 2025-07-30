@@ -1,7 +1,7 @@
 // app/pages/masyarakat/Gamifikasi.tsx - Enhanced gamification page
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { PointsDisplay } from "../../components/PointsDisplay";
 import { MissionCard } from "../../components/MissionCard";
