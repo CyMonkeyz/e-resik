@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { useApp } from "../../context/AppContext";
+import { StatusBadge } from "../../components/StatusBadge";
 import CountUp from "react-countup";
 import { 
   IoArrowForward, 

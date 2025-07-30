@@ -6,7 +6,7 @@ import Navbar from "../../components/Navbar";
 import { PointsDisplay } from "../../components/PointsDisplay";
 import { MissionCard } from "../../components/MissionCard";
 import { Modal } from "../../components/Modal";
-import { useApp } from "../../context/AppContext";
+import { useApp, showToast, type Badge } from "../../context/AppContext";
 import { leaderboard } from "../../utils/dummyData";
 import { 
   IoTrophy, 
@@ -18,26 +18,45 @@ import {
   IoLockClosed,
   IoInformationCircle,
   IoRibbon,
-  IoFlame
+  IoFlame,
+  IoRibbonOutline
 } from "react-icons/io5";
 
 export default function Gamifikasi() {
   const { user, missions, completeMission } = useApp();
+  // Which tab is currently selected
   const [selectedTab, setSelectedTab] = useState("missions");
-  const [selectedBadge, setSelectedBadge] = useState(null);
+  // Currently selected badge for the detail modal
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  // Control visibility of the badge detail modal
   const [showBadgeModal, setShowBadgeModal] = useState(false);
+  // Control visibility of the reward confirmation modal
   const [showRewardModal, setShowRewardModal] = useState(false);
 
-  const completedMissions = missions.filter(m => m.completed);
-  const activeMissions = missions.filter(m => !m.completed);
-  const achievedBadges = user.badges.filter(b => b.achieved);
-  const unlockedBadges = user.badges.filter(b => !b.achieved);
+  // Split missions into completed vs active lists
+  const completedMissions = missions.filter((m) => m.completed);
+  const activeMissions = missions.filter((m) => !m.completed);
+  // Explicitly type filtered badge arrays to avoid `never[]` inference errors
+  const achievedBadges: Badge[] = user.badges.filter((b) => b.achieved);
+  const unlockedBadges: Badge[] = user.badges.filter((b) => !b.achieved);
 
-  // Calculate user rank in leaderboard
-  const userRank = leaderboard.findIndex(l => l.name === user.name) + 1;
+  // Determine the user's ranking within the leaderboard. Use explicit
+  // parameter types to avoid implicit `any` in the callback.
+  const userRank = leaderboard.findIndex((l: any) => l.name === user.name) + 1;
+
+  // Define a shape for reward items. Having an explicit type avoids
+  // TypeScript inferring an array of `never` when filtering or mapping.
+  interface Reward {
+    id: number;
+    name: string;
+    points: number;
+    description: string;
+    icon: string;
+    available: boolean;
+  }
 
   // Available rewards based on points
-  const rewards = [
+  const rewards: Reward[] = [
     { id: 1, name: "Voucher Belanja", points: 100, description: "Diskon 10% di minimarket", icon: "🛒", available: user.points >= 100 },
     { id: 2, name: "Tote Bag Eco", points: 200, description: "Tas ramah lingkungan", icon: "👜", available: user.points >= 200 },
     { id: 3, name: "Tumbler Premium", points: 300, description: "Bottle minum berkualitas", icon: "🥤", available: user.points >= 300 },
@@ -64,7 +83,7 @@ export default function Gamifikasi() {
     active: { backgroundColor: "#10b981", color: "#ffffff" }
   };
 
-  const handleBadgeClick = (badge) => {
+  const handleBadgeClick = (badge: Badge) => {
     setSelectedBadge(badge);
     setShowBadgeModal(true);
   };
@@ -257,7 +276,8 @@ export default function Gamifikasi() {
                       <p className="text-sm text-gray-600">Total Badge</p>
                       <p className="text-3xl font-bold text-gray-600">{user.badges.length}</p>
                     </div>
-                    <IoRibbon className="w-12 h-12 text-gray-500" />
+                    {/* Use RibbonOutline instead of Ribbon to avoid invalid element issues */}
+                    <IoRibbonOutline className="w-12 h-12 text-gray-500" />
                   </div>
                 </div>
               </div>
@@ -341,7 +361,7 @@ export default function Gamifikasi() {
                 
                 <div className="p-6">
                   <div className="space-y-4">
-                    {leaderboard.map((player, index) => (
+                    {leaderboard.map((player: any, index: number) => (
                       <motion.div
                         key={player.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -499,8 +519,9 @@ export default function Gamifikasi() {
               {selectedBadge.achieved ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                   <p className="text-green-800 font-medium mb-2">🎉 Badge Diraih!</p>
+                  {/* Display the date badge was achieved only if provided. If `date` is undefined, avoid passing undefined to Date constructor which causes a type error. */}
                   <p className="text-sm text-green-600">
-                    Diraih pada {new Date(selectedBadge.date).toLocaleDateString("id-ID")}
+                    Diraih pada {selectedBadge.date ? new Date(selectedBadge.date).toLocaleDateString("id-ID") : "-"}
                   </p>
                 </div>
               ) : (
