@@ -1,10 +1,11 @@
-import { Pie } from "react-chartjs-2";
+import { useEffect } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
   Legend,
 } from "chart.js";
+import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -25,6 +26,8 @@ export default function ProgressChart({ progress }: ProgressChartProps) {
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: true, position: "bottom" as const },
     },
@@ -32,7 +35,9 @@ export default function ProgressChart({ progress }: ProgressChartProps) {
 
   return (
     <div className="bg-white p-4 rounded shadow">
-      <Pie data={data} options={options} />
+      <div style={{ height: "300px" }}>
+        <Pie data={data} options={options} />
+      </div>
     </div>
   );
 }

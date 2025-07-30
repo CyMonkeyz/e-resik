@@ -1,4 +1,4 @@
-import { Bar } from "react-chartjs-2";
+import { useEffect, useRef } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,8 +8,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Bar } from "react-chartjs-2";
 import { motion } from "framer-motion";
 
+// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const data = {
@@ -25,6 +27,7 @@ const data = {
 
 const options = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: { position: "top" as const },
     title: { display: true, text: "Rekap Setoran per Kategori" },
@@ -39,7 +42,9 @@ export default function KPIChart() {
       transition={{ duration: 0.7 }}
       className="bg-white p-4 rounded shadow"
     >
-      <Bar data={data} options={options} />
+      <div style={{ height: "400px" }}>
+        <Bar data={data} options={options} />
+      </div>
     </motion.div>
   );
 }
