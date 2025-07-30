@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../../components/Navbar";
 import { StatusBadge } from "../../components/StatusBadge";
 import { Modal } from "../../components/Modal";
-import { useApp } from "../../context/AppContext";
+import { useApp, type Request } from "../../context/AppContext";
 import { 
   IoCalendar, 
   IoFilter, 
@@ -21,7 +21,7 @@ export default function Riwayat() {
   const { user, getUserRequests } = useApp();
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
 

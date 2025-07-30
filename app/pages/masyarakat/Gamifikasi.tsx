@@ -18,7 +18,7 @@ import {
   IoLockClosed,
   IoInformationCircle,
   IoRibbon,
-  IoFire
+  IoFlame
 } from "react-icons/io5";
 
 export default function Gamifikasi() {

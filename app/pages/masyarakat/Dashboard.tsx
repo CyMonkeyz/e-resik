@@ -8,7 +8,8 @@ import { MissionCard } from "../../components/MissionCard";
 import { VideoCard } from "../../components/VideoCard";
 import { NotificationDropdown } from "../../components/NotificationDropdown";
 import { educationalContent } from "../../utils/dummyData";
-import { IoTrophy, IoLeaf, IoRecycle, IoCalendar, IoStatsChart, IoFlash, IoGift, IoTrendingUp, IoTime, IoCheckmarkCircle } from "react-icons/io5";
+import { IoTrophy, IoLeaf, IoCalendar, IoStatsChart, IoFlash, IoGift, IoTrendingUp, IoTime, IoCheckmarkCircle } from "react-icons/io5";
+import { RiRecycleFill } from "react-icons/ri";
 
 export default function DashboardMasyarakat() {
   const { 
@@ -158,7 +159,7 @@ export default function DashboardMasyarakat() {
                       </p>
                     </div>
                     <div className="p-3 bg-green-100 rounded-full">
-                      <IoRecycle className="w-6 h-6 text-green-600" />
+                      <RiRecycleFill className="w-6 h-6 text-green-600" />
                     </div>
                   </div>
                 </motion.div>
@@ -361,7 +362,7 @@ export default function DashboardMasyarakat() {
 
             {/* Pending Requests Alert */}
             {pendingRequests.length > 0 && (
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
@@ -383,8 +384,8 @@ export default function DashboardMasyarakat() {
                     Tukar Reward
                   </div>
                 </Link>
-              </div>
             </motion.div>
+          )}
 
             {/* Environmental Impact Widget */}
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg shadow-md p-6 border border-green-200">
@@ -613,73 +614,4 @@ export default function DashboardMasyarakat() {
       </motion.main>
     </>
   );
-}/jadwal"
-                  className="text-xs bg-yellow-600 text-white px-3 py-1 rounded-lg hover:bg-yellow-700 transition-colors"
-                >
-                  Lihat Detail
-                </Link>
-              </motion.div>
-            )}
-
-            {/* Recent Notifications */}
-            <motion.div variants={itemVariants} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">🔔 Notifikasi Terbaru</h3>
-              <div className="space-y-3">
-                {recentNotifications.length > 0 ? (
-                  recentNotifications.map((notification) => (
-                    <motion.div
-                      key={notification.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className={`p-3 rounded-lg border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${
-                        notification.type === "success"
-                          ? "bg-green-50 border-green-500"
-                          : notification.type === "achievement"
-                          ? "bg-yellow-50 border-yellow-500"
-                          : "bg-blue-50 border-blue-500"
-                      }`}
-                      onClick={() => markNotificationAsRead(notification.id)}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{notification.title}</p>
-                          <p className="text-xs text-gray-600 mt-1">{notification.message}</p>
-                        </div>
-                        {!notification.read && (
-                          <div className="w-2 h-2 bg-blue-500 rounded-full ml-2 mt-1" />
-                        )}
-                      </div>
-                    </motion.div>
-                  ))
-                ) : (
-                  <div className="text-center py-6 text-gray-500">
-                    <p className="text-sm">Tidak ada notifikasi terbaru</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Quick Actions */}
-            <motion.div variants={itemVariants} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">⚡ Aksi Cepat</h3>
-              <div className="space-y-3">
-                <Link
-                  to="/masyarakat/jadwal"
-                  className="block w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-center font-medium group"
-                >
-                  <div className="flex items-center justify-center">
-                    <IoCalendar className="w-4 h-4 mr-2 group-hover:animate-bounce" />
-                    Jadwalkan Setor
-                  </div>
-                </Link>
-                <Link
-                  to="/masyarakat/statistik"
-                  className="block w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center font-medium group"
-                >
-                  <div className="flex items-center justify-center">
-                    <IoStatsChart className="w-4 h-4 mr-2 group-hover:animate-pulse" />
-                    Lihat Statistik
-                  </div>
-                </Link>
-                <Link
-                  to="/masyarakat
+}
