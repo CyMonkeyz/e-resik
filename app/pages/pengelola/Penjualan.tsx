@@ -13,7 +13,8 @@ import {
   IoArrowDown,
   IoCalendarOutline,
   IoScaleOutline,
-  IoBusinessOutline
+  IoBusinessOutline,
+  IoStatsChart
 } from "react-icons/io5";
 
 // Definisikan tipe data untuk transaksi penjualan jika belum ada di AppContext

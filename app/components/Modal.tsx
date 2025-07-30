@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ReactNode, useEffect } from "react";
+// Only `useEffect` is needed at runtime; `ReactNode` is a type-only import.
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface ModalProps {

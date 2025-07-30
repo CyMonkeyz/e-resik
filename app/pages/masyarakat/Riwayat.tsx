@@ -73,12 +73,14 @@ export default function Riwayat() {
     { id: "cancelled", label: "Dibatalkan", count: stats.cancelled }
   ];
 
-  const handleViewDetail = (request) => {
+  // When a user clicks to view details, set the selected request (typed) and show modal
+  const handleViewDetail = (request: Request) => {
     setSelectedRequest(request);
     setShowDetailModal(true);
   };
 
-  const getStatusIcon = (status) => {
+  // Status badge icon; provide type for status
+  const getStatusIcon = (status: Request["status"]) => {
     switch (status) {
       case "completed": return "✅";
       case "pending": return "⏳";
@@ -298,7 +300,7 @@ export default function Riwayat() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     <AnimatePresence>
                       {filteredRequests.length > 0 ? (
-                        filteredRequests.map((request, index) => (
+                        filteredRequests.map((request: Request, index: number) => (
                           <motion.tr
                             key={request.id}
                             initial={{ opacity: 0, y: 20 }}

@@ -1,5 +1,9 @@
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+// React exports types like `ReactNode` only for type annotations. Importing
+// them as values at runtime causes errors because CommonJS modules do not
+// expose these named exports. Use `import type` to pull in the type-only
+// definitions so they are erased during compilation.
+import type { ReactNode } from "react";
 
 interface ButtonProps {
   children: ReactNode;

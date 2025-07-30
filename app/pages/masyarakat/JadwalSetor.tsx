@@ -7,7 +7,7 @@ import Button from "../../components/Button";
 import { Modal } from "../../components/Modal";
 import { StatusBadge } from "../../components/StatusBadge";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { useApp, showToast } from "../../context/AppContext";
+import { useApp, showToast, type Request } from "../../context/AppContext";
 import { wasteCategories } from "../../utils/dummyData";
 import { IoCalendar, IoScale, IoInformationCircle, IoTrash, IoAdd, IoTime, IoLocation, IoCall, IoCheckmarkCircle } from "react-icons/io5";
 
@@ -15,7 +15,7 @@ export default function JadwalSetor() {
   const { user, addRequest, getUserRequests } = useApp();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [form, setForm] = useState({
     type: "pickup" as "pickup" | "deposit",
     wasteType: "",
@@ -220,7 +220,7 @@ export default function JadwalSetor() {
                     Jenis Sampah <span className="text-red-500">*</span>
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {wasteCategories.map((category) => (
+                    {wasteCategories.map((category: any) => (
                       <motion.div
                         key={category.id}
                         whileHover={{ scale: 1.02 }}

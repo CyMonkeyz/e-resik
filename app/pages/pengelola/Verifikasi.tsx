@@ -5,7 +5,9 @@ import Navbar from "../../components/Navbar";
 import { Modal } from "../../components/Modal";
 import Button from "../../components/Button";
 import { StatusBadge } from "../../components/StatusBadge";
-import { useApp, showToast, Request } from "../../context/AppContext";
+// Import `Request` as a type only. Interfaces are not available at runtime,
+// and importing them as values leads to build-time warnings and SSR errors.
+import { useApp, showToast, type Request } from "../../context/AppContext";
 import { 
   IoCheckmarkCircle, 
   IoCloseCircle, 
@@ -49,12 +51,15 @@ export default function Verifikasi() {
     });
 
     if (sortConfig !== null) {
+      const { key, direction } = sortConfig;
       filtered.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
+        const aValue = a[key] as any;
+        const bValue = b[key] as any;
+        if (aValue < bValue) {
+          return direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
+        if (aValue > bValue) {
+          return direction === 'ascending' ? 1 : -1;
         }
         return 0;
       });

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// import React from "react"; (Not needed in React 17+ with JSX transform)
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../../components/Navbar";
 import { useApp } from "../../context/AppContext";
