@@ -1,47 +1,162 @@
-// app/pages/masyarakat/Dashboard.tsx - Enhanced dashboard with complete functionality
+// app/pages/masyarakat/Dashboard.tsx - Enhanced dashboard with bug fixes
 import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { useApp } from "../../context/AppContext";
 import { PointsDisplay } from "../../components/PointsDisplay";
 import { MissionCard } from "../../components/MissionCard";
 import { VideoCard } from "../../components/VideoCard";
 import { NotificationDropdown } from "../../components/NotificationDropdown";
-import { educationalContent } from "../../utils/dummyData";
 import { IoTrophy, IoLeaf, IoCalendar, IoStatsChart, IoFlash, IoGift, IoTrendingUp, IoTime, IoCheckmarkCircle } from "react-icons/io5";
 import { RiRecycleFill } from "react-icons/ri";
+import { useState, useEffect } from "react";
+
+// Weather API simulation
+const getWeatherData = () => {
+  // In real app, this would be an API call
+  return {
+    temperature: 28,
+    condition: "Cerah Berawan",
+    icon: "🌤️",
+    tip: "Cuaca bagus untuk menjemur sampah yang akan disetor!"
+  };
+};
+
+// Educational content simulation
+const educationalContent = [
+  {
+    id: 1,
+    title: "Cara Memilah Sampah dengan Benar",
+    thumbnail: "https://example.com/thumb1.jpg",
+    duration: "5:30",
+    views: 1200,
+    type: "video" as "video",
+    url: "https://example.com/video1"
+  },
+  {
+    id: 2,
+    title: "Tips Mengolah Sampah Organik",
+    thumbnail: "https://example.com/thumb2.jpg",
+    duration: "4:15",
+    views: 980,
+    type: "video" as "video",
+    url: "https://example.com/video2"
+  },
+  {
+    id: 3,
+    title: "Mengenal Jenis Plastik yang Bisa Didaur Ulang",
+    thumbnail: "https://example.com/thumb3.jpg",
+    duration: "6:45",
+    views: 1500,
+    type: "video" as "video",
+    url: "https://example.com/video3"
+  },
+  {
+    id: 4,
+    title: "Membuat Kompos dari Sampah Dapur",
+    thumbnail: "https://example.com/thumb4.jpg",
+    duration: "8:20",
+    views: 850,
+    type: "video" as "video",
+    url: "https://example.com/video4"
+  }
+];
+
+// Leaderboard API simulation
+const getLeaderboard = (currentUser: any) => {
+  // In real app, this would be an API call
+  const mockUsers = [
+    { name: "Siti Aminah", points: 180, rank: 1, isUser: false },
+    { name: "Ahmad Rahman", points: 165, rank: 2, isUser: false },
+    { name: "Budi Santoso", points: 152, rank: 3, isUser: false },
+  ];
+  
+  // Insert current user into leaderboard
+  const userRank = mockUsers.findIndex(user => user.points < currentUser.points) + 1;
+  if (userRank === 0) {
+    mockUsers.push({ 
+      name: currentUser.name, 
+      points: currentUser.points, 
+      rank: mockUsers.length + 1, 
+      isUser: true 
+    });
+  } else {
+    mockUsers.splice(userRank - 1, 0, {
+      name: currentUser.name,
+      points: currentUser.points,
+      rank: userRank,
+      isUser: true
+    });
+    // Update ranks
+    mockUsers.forEach((user, index) => {
+      user.rank = index + 1;
+    });
+  }
+  
+  return mockUsers.slice(0, 3);
+};
 
 export default function DashboardMasyarakat() {
   const { 
     user, 
-    missions, 
-    notifications, 
+    missions = [], 
+    notifications = [], 
     getUserRequests,
     markNotificationAsRead,
     markAllNotificationsAsRead
   } = useApp();
   
-  // Get user data
-  const userRequests = getUserRequests(user.id);
+  const [weather, setWeather] = useState(getWeatherData());
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  
+  useEffect(() => {
+    // Initialize leaderboard
+    setLeaderboard(getLeaderboard(user));
+  }, [user]);
+  
+  // Safely get user data with fallbacks
+  const userRequests = getUserRequests ? getUserRequests(user.id) : [];
   const activeMissions = missions.filter(m => !m.completed).slice(0, 3);
   const recentNotifications = notifications.slice(0, 3);
-  const achievedBadges = user.badges.filter(b => b.achieved);
+  const achievedBadges = user.badges?.filter(b => b.achieved) || [];
   const pendingRequests = userRequests.filter(r => r.status === "pending");
-  const completedThisWeek = userRequests.filter(r => 
-    r.status === "completed" && 
-    new Date(r.verifiedAt || r.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-  );
+  
+  // Safe date filtering with error handling
+  const completedThisWeek = userRequests.filter(r => {
+    try {
+      return r.status === "completed" && 
+        new Date(r.verifiedAt || r.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    } catch (error) {
+      console.warn("Date parsing error:", error);
+      return false;
+    }
+  });
 
   // Calculate progress to next level
   const pointsInCurrentLevel = user.points % 100;
   const progressToNextLevel = (pointsInCurrentLevel / 100) * 100;
   const pointsToNextLevel = 100 - pointsInCurrentLevel;
 
-  // Get recent achievements
+  // Get recent achievements with safe date handling
   const recentAchievements = achievedBadges
     .filter(b => b.date)
-    .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
+    .sort((a, b) => {
+      try {
+        return new Date(b.date!).getTime() - new Date(a.date!).getTime();
+      } catch (error) {
+        return 0;
+      }
+    })
     .slice(0, 2);
+
+  // Safe access to statistics with defaults
+  const statistics = {
+    ...(user.statistics || {}),
+    totalWaste: user.statistics?.totalWaste ?? 0,
+    co2Saved: user.statistics?.co2Saved ?? 0,
+    treesEquivalent: user.statistics?.treesEquivalent ?? 0,
+    plasticWaste: user.statistics?.plasticWaste ?? 0
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -82,9 +197,9 @@ export default function DashboardMasyarakat() {
                 <div className="mb-6 lg:mb-0">
                   <div className="flex items-center space-x-2 mb-2">
                     <h1 className="text-2xl md:text-3xl font-bold">
-                      Selamat Datang, {user.name}! 👋
+                      Selamat Datang, {user.name || 'Pengguna'}! 👋
                     </h1>
-                    {user.level >= 2 && (
+                    {(user.level || 0) >= 2 && (
                       <span className="bg-yellow-500 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
                         VIP
                       </span>
@@ -105,21 +220,21 @@ export default function DashboardMasyarakat() {
                       <div className="text-xs text-green-100">Badge Diraih</div>
                     </div>
                     <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                      <div className="text-xl font-bold">{user.statistics.totalWaste.toFixed(1)}kg</div>
+                      <div className="text-xl font-bold">{statistics.totalWaste.toFixed(1)}kg</div>
                       <div className="text-xs text-green-100">Total Sampah</div>
                     </div>
                     <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                      <div className="text-xl font-bold">{user.statistics.co2Saved.toFixed(1)}kg</div>
+                      <div className="text-xl font-bold">{statistics.co2Saved.toFixed(1)}kg</div>
                       <div className="text-xs text-green-100">CO₂ Diselamatkan</div>
                     </div>
                   </div>
                 </div>
                 
                 <div className="text-center lg:text-right">
-                  <PointsDisplay points={user.points} size="lg" />
+                  <PointsDisplay points={user.points || 0} size="lg" />
                   <div className="mt-2 space-y-2">
                     <div className="flex items-center justify-between text-sm text-green-100">
-                      <span>Level {user.level}</span>
+                      <span>Level {user.level || 1}</span>
                       <span>{pointsToNextLevel} poin lagi</span>
                     </div>
                     <div className="w-32 bg-white bg-opacity-30 rounded-full h-2">
@@ -152,10 +267,10 @@ export default function DashboardMasyarakat() {
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Total Sampah</p>
                       <p className="text-2xl font-bold text-green-600">
-                        {user.statistics.totalWaste.toFixed(1)}kg
+                        {statistics.totalWaste.toFixed(1)}kg
                       </p>
                       <p className="text-xs text-gray-500">
-                        +{(user.statistics.totalWaste * 0.1).toFixed(1)}kg minggu ini
+                        +{(statistics.totalWaste * 0.1).toFixed(1)}kg minggu ini
                       </p>
                     </div>
                     <div className="p-3 bg-green-100 rounded-full">
@@ -172,10 +287,10 @@ export default function DashboardMasyarakat() {
                     <div>
                       <p className="text-sm text-gray-600 mb-1">CO₂ Diselamatkan</p>
                       <p className="text-2xl font-bold text-blue-600">
-                        {user.statistics.co2Saved.toFixed(1)}kg
+                        {statistics.co2Saved.toFixed(1)}kg
                       </p>
                       <p className="text-xs text-gray-500">
-                        Setara {user.statistics.treesEquivalent.toFixed(1)} pohon
+                        Setara {statistics.treesEquivalent.toFixed(1)} pohon
                       </p>
                     </div>
                     <div className="p-3 bg-blue-100 rounded-full">
@@ -195,7 +310,7 @@ export default function DashboardMasyarakat() {
                         {achievedBadges.length}
                       </p>
                       <p className="text-xs text-gray-500">
-                        dari {user.badges.length} total badge
+                        dari {user.badges?.length || 0} total badge
                       </p>
                     </div>
                     <div className="p-3 bg-yellow-100 rounded-full">
@@ -297,7 +412,11 @@ export default function DashboardMasyarakat() {
                             {request.type === "pickup" ? "Penjemputan" : "Setoran"} {request.wasteType}
                           </p>
                           <p className="text-sm text-gray-600">
-                            {request.estimatedWeight}kg • {new Date(request.createdAt).toLocaleDateString("id-ID")}
+                            {request.estimatedWeight}kg • {
+                              request.createdAt ? 
+                              new Date(request.createdAt).toLocaleDateString("id-ID") : 
+                              "Tanggal tidak tersedia"
+                            }
                           </p>
                         </div>
                       </div>
@@ -336,7 +455,7 @@ export default function DashboardMasyarakat() {
                       whileHover={{ scale: 1.05 }}
                       className="flex items-center p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200"
                     >
-                      <span className="text-2xl mr-3">{badge.icon}</span>
+                      <span className="text-2xl mr-3">{badge.icon || "🏆"}</span>
                       <div className="flex-1">
                         <p className="font-medium text-yellow-800">{badge.name}</p>
                         {badge.date && (
@@ -384,8 +503,8 @@ export default function DashboardMasyarakat() {
                     Tukar Reward
                   </div>
                 </Link>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
 
             {/* Environmental Impact Widget */}
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg shadow-md p-6 border border-green-200">
@@ -400,7 +519,7 @@ export default function DashboardMasyarakat() {
                     <span className="text-sm text-gray-600">CO₂ Diselamatkan</span>
                   </div>
                   <span className="font-bold text-green-600">
-                    {user.statistics.co2Saved.toFixed(1)} kg
+                    {statistics.co2Saved.toFixed(1)} kg
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -409,7 +528,7 @@ export default function DashboardMasyarakat() {
                     <span className="text-sm text-gray-600">Setara Pohon</span>
                   </div>
                   <span className="font-bold text-green-600">
-                    {user.statistics.treesEquivalent.toFixed(1)}
+                    {statistics.treesEquivalent.toFixed(1)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -418,7 +537,7 @@ export default function DashboardMasyarakat() {
                     <span className="text-sm text-gray-600">Air Hemat</span>
                   </div>
                   <span className="font-bold text-blue-600">
-                    {(user.statistics.totalWaste * 2.5).toFixed(0)} L
+                    {(statistics.totalWaste * 2.5).toFixed(0)} L
                   </span>
                 </div>
               </div>
@@ -441,13 +560,9 @@ export default function DashboardMasyarakat() {
                 </Link>
               </div>
               <div className="space-y-3">
-                {[
-                  { name: "Siti Aminah", points: 180, rank: 1, isUser: false },
-                  { name: "Ahmad Rahman", points: 165, rank: 2, isUser: false },
-                  { name: user.name, points: user.points, rank: 3, isUser: true }
-                ].map((player, index) => (
+                {leaderboard.map((player, index) => (
                   <motion.div
-                    key={player.name}
+                    key={`${player.name}-${index}`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -509,14 +624,14 @@ export default function DashboardMasyarakat() {
                 <div className="bg-white bg-opacity-20 rounded-full h-2 mb-2">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${Math.min((user.statistics.totalWaste / 10) * 100, 100)}%` }}
+                    animate={{ width: `${Math.min((statistics.totalWaste / 10) * 100, 100)}%` }}
                     transition={{ duration: 1, delay: 1 }}
                     className="bg-white h-2 rounded-full"
                   />
                 </div>
                 <p className="text-xs text-purple-100">
-                  {user.statistics.totalWaste.toFixed(1)}/10 kg (
-                  {Math.min(Math.round((user.statistics.totalWaste / 10) * 100), 100)}%)
+                  {statistics.totalWaste.toFixed(1)}/10 kg (
+                  {Math.min(Math.round((statistics.totalWaste / 10) * 100), 100)}%)
                 </p>
               </div>
             </motion.div>
@@ -527,12 +642,12 @@ export default function DashboardMasyarakat() {
                 ☀️ Cuaca Hari Ini
               </h3>
               <div className="text-center">
-                <div className="text-4xl mb-2">🌤️</div>
-                <p className="font-bold text-xl text-gray-800">28°C</p>
-                <p className="text-sm text-gray-600">Cerah Berawan</p>
+                <div className="text-4xl mb-2">{weather.icon}</div>
+                <p className="font-bold text-xl text-gray-800">{weather.temperature}°C</p>
+                <p className="text-sm text-gray-600">{weather.condition}</p>
                 <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                   <p className="text-xs text-blue-800">
-                    ✨ Cuaca bagus untuk menjemur sampah yang akan disetor!
+                    ✨ {weather.tip}
                   </p>
                 </div>
               </div>
@@ -574,7 +689,7 @@ export default function DashboardMasyarakat() {
             <div className="text-center">
               <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-3">
                 <p className="text-2xl font-bold">
-                  {user.statistics.plasticWaste.toFixed(1)}/15kg
+                  {statistics.plasticWaste.toFixed(1)}/15kg
                 </p>
                 <p className="text-xs text-orange-100">Progress Anda</p>
               </div>

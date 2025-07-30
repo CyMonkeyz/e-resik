@@ -81,35 +81,41 @@ export const missions = [
 ];
 
 // Educational content
-export const educationalContent = [
+const educationalContent = [
   {
-    id: 1,
-    title: "Cara Memilah Sampah di Rumah",
-    type: "video",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    duration: "5:30",
-    views: 1250
+    id: "1",
+    title: "Cara Memilah Sampah Plastik",
+    description: "Pelajari cara memilah sampah plastik yang benar",
+    thumbnail: "/images/education/plastic-sorting.jpg",
+    duration: "5 menit",
+    category: "Dasar"
   },
   {
-    id: 2,
+    id: "2", 
     title: "Manfaat Daur Ulang untuk Lingkungan",
-    type: "article",
-    thumbnail: "/api/placeholder/300/200",
-    url: "#",
-    readTime: "3 menit",
-    views: 890
+    description: "Memahami dampak positif daur ulang",
+    thumbnail: "/images/education/recycling-benefits.jpg",
+    duration: "8 menit",
+    category: "Lingkungan"
   },
   {
-    id: 3,
-    title: "DIY: Kreasi dari Botol Plastik Bekas",
-    type: "video",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    duration: "8:15",
-    views: 2100
+    id: "3",
+    title: "Kreasi dari Barang Bekas",
+    description: "Tutorial membuat kerajinan dari sampah",
+    thumbnail: "/images/education/diy-crafts.jpg", 
+    duration: "12 menit",
+    category: "Kreativitas"
+  },
+  {
+    id: "4",
+    title: "Kompos dari Sampah Organik",
+    description: "Cara membuat kompos di rumah",
+    thumbnail: "/images/education/composting.jpg",
+    duration: "15 menit", 
+    category: "Organik"
   }
 ];
+
 
 // Pickup/deposit requests (shared between masyarakat and pengelola)
 export let requests = [
