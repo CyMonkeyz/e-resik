@@ -73,12 +73,12 @@ export default function Riwayat() {
     { id: "cancelled", label: "Dibatalkan", count: stats.cancelled }
   ];
 
-  const handleViewDetail = (request) => {
+  const handleViewDetail = (request: Request) => {
     setSelectedRequest(request);
     setShowDetailModal(true);
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: Request["status"]) => {
     switch (status) {
       case "completed": return "✅";
       case "pending": return "⏳";

@@ -6,11 +6,12 @@ import { useApp, showToast } from "../../context/AppContext";
 import Button from "../../components/Button";
 import { Modal } from "../../components/Modal";
 import { 
-  IoAddCircle, 
-  IoCash, 
-  IoReceipt, 
-  IoArrowUp, 
+  IoAddCircle,
+  IoCash,
+  IoReceipt,
+  IoArrowUp,
   IoArrowDown,
+  IoStatsChart,
   IoCalendarOutline,
   IoScaleOutline,
   IoBusinessOutline
