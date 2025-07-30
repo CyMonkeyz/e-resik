@@ -15,16 +15,16 @@ import {
   Legend,
 } from "chart.js";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
-import { 
-  IoLeaf, 
-  IoRecycle, 
-  IoTrendingUp, 
+import {
+  IoLeaf,
+  IoTrendingUp,
   IoCalendar,
   IoStatsChart,
   IoTrophy,
   IoWater,
   IoFlash
 } from "react-icons/io5";
+import { RiRecycleFill } from "react-icons/ri";
 
 // Register Chart.js components
 ChartJS.register(
@@ -207,7 +207,7 @@ export default function Statistik() {
                   <p className="text-sm text-gray-600">Total Setoran</p>
                   <p className="text-2xl font-bold text-blue-600">{completedRequests.length}</p>
                 </div>
-                <IoRecycle className="w-8 h-8 text-blue-500" />
+                <RiRecycleFill className="w-8 h-8 text-blue-500" />
               </div>
             </div>
             
@@ -247,7 +247,6 @@ export default function Statistik() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Charts */}
-                      </div>
 
           {/* Right Column - Environmental Impact & Achievements */}
           <div className="space-y-6">

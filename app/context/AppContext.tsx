@@ -67,7 +67,7 @@ interface Notification {
   createdAt: string;
 }
 
-interface Request {
+export interface Request {
   id: number;
   userId: number;
   userName: string;
