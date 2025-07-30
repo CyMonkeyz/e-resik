@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ReactNode, useEffect } from "react";
+import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface ModalProps {

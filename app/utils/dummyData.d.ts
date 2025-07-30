@@ -1,0 +1,15 @@
+export const userData: any;
+export const missions: any;
+export const educationalContent: any;
+export let requests: any;
+export const leaderboard: any;
+export let notifications: any;
+export const kpiData: any;
+export const registeredUsers: any;
+export const wasteStock: any;
+export const salesTransactions: any;
+export const addRequest: (newRequest: any) => any;
+export const updateRequestStatus: (requestId: any, status: any, additionalData?: any) => any;
+export const addNotification: (notification: any) => any;
+export const markNotificationRead: (notificationId: any) => any;
+export const wasteCategories: any;
